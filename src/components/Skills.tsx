@@ -1,0 +1,154 @@
+import React, { useState } from 'react';
+
+interface SkillType {
+  name: string;
+  icon: string;
+  color: string;
+  bgColor: string;
+}
+
+const Skills = () => {
+  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+
+  const frontendSkills = [
+    { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg', color: 'from-blue-500 to-cyan-400', bgColor: 'bg-blue-900/20' },
+    { name: 'HTML5', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg', color: 'from-orange-500 to-red-400', bgColor: 'bg-orange-900/20' },
+    { name: 'CSS3', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg', color: 'from-blue-400 to-indigo-400', bgColor: 'bg-blue-900/20' },
+    { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg', color: 'from-yellow-400 to-amber-500', bgColor: 'bg-yellow-900/20' },
+    { name: 'TypeScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg', color: 'from-blue-600 to-blue-400', bgColor: 'bg-blue-900/20' },
+  ];
+
+  const backendSkills = [
+    { name: 'Flask', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg', color: 'from-gray-500 to-gray-400', bgColor: 'bg-gray-900/30' },
+    { name: 'Django', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg', color: 'from-green-600 to-green-400', bgColor: 'bg-green-900/20' },
+    { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', color: 'from-blue-500 to-blue-300', bgColor: 'bg-blue-900/20' },
+    { name: 'Node.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg', color: 'from-green-500 to-green-300', bgColor: 'bg-green-900/20' },
+  ];
+
+  const otherSkills = [
+    { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg', color: 'from-orange-600 to-orange-400', bgColor: 'bg-orange-900/20' },
+    { name: 'Tkinter', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', color: 'from-blue-500 to-blue-300', bgColor: 'bg-blue-900/20' },
+    { name: 'MongoDB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg', color: 'from-green-500 to-green-300', bgColor: 'bg-green-900/20' },
+    { name: 'SQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg', color: 'from-blue-400 to-blue-300', bgColor: 'bg-blue-900/20' },
+  ];
+
+  const handleSkillHover = (name: string) => {
+    setHoveredSkill(name);
+  };
+
+  const handleSkillLeave = () => {
+    setHoveredSkill(null);
+  };
+
+  const renderSkillCard = (skill: SkillType, index: number, category: string) => (
+    <div 
+      key={`${category}-${index}`} 
+      className={`relative overflow-hidden rounded-xl transition-all duration-500 transform ${hoveredSkill === skill.name ? 'scale-105 z-10' : 'scale-100'}`}
+      style={{ 
+        animationDelay: `${index * 0.1}s`,
+        opacity: 0,
+        animation: `floatIn 0.6s ease-out ${index * 0.15}s forwards`
+      }}
+      onMouseEnter={() => handleSkillHover(skill.name)}
+      onMouseLeave={handleSkillLeave}
+    >
+      <div className={`flex items-center p-4 ${skill.bgColor} backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden group`}>
+        {/* Background gradient that animates on hover */}
+        <div 
+          className={`absolute inset-0 bg-gradient-to-r ${skill.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
+        ></div>
+        
+        {/* Animated icon */}
+        <div className="relative z-10 mr-4 p-2 rounded-full bg-gray-800 bg-opacity-50 group-hover:bg-opacity-70 transition-all duration-300 transform group-hover:rotate-12">
+          <img 
+            src={skill.icon} 
+            alt={skill.name} 
+            className="w-8 h-8 transition-all duration-500 group-hover:scale-110" 
+          />
+        </div>
+        
+        {/* Skill name with animated underline */}
+        <div className="relative z-10">
+          <span className="text-white font-medium text-lg">{skill.name}</span>
+          <div className={`h-0.5 w-0 bg-gradient-to-r ${skill.color} transition-all duration-300 group-hover:w-full mt-1`}></div>
+        </div>
+        
+        {/* Decorative circles */}
+        <div className={`absolute -bottom-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-r ${skill.color} opacity-10 transform transition-transform duration-500 group-hover:scale-150`}></div>
+        <div className={`absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-r ${skill.color} opacity-10 transform transition-transform duration-500 group-hover:scale-150`}></div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="py-20 px-4 relative overflow-hidden">
+      {/* Background with animated gradient */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-gray-900 via-purple-900/20 to-gray-900 z-0">
+        {/* Animated grid background */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        
+        {/* Floating orbs */}
+        <div className="absolute top-20 left-20 w-64 h-64 rounded-full bg-purple-600/10 mix-blend-multiply filter blur-3xl animate-blob"></div>
+        <div className="absolute bottom-20 right-20 w-64 h-64 rounded-full bg-blue-600/10 mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+      </div>
+      
+      <div className="container mx-auto relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 mb-4 animate-text-shimmer">
+            Technical Skills
+          </h2>
+          <p className="text-gray-300 max-w-2xl mx-auto animate-fade-in-delay">
+            Proficient in a variety of technologies across frontend, backend, and other domains
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 mb-6 animate-fade-in-delay">
+              <span className="inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Frontend
+              </span>
+            </h3>
+            <div className="space-y-4">
+              {frontendSkills.map((skill, index) => renderSkillCard(skill, index, 'frontend'))}
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-6 animate-fade-in-delay">
+              <span className="inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                </svg>
+                Backend
+              </span>
+            </h3>
+            <div className="space-y-4">
+              {backendSkills.map((skill, index) => renderSkillCard(skill, index, 'backend'))}
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500 mb-6 animate-fade-in-delay">
+              <span className="inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Other
+              </span>
+            </h3>
+            <div className="space-y-4">
+              {otherSkills.map((skill, index) => renderSkillCard(skill, index, 'other'))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Skills;
