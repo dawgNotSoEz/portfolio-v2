@@ -128,7 +128,7 @@ const Contact = () => {
                 </div>
               </a>
               <a 
-                href="https://www.linkedin.com/in/savitender-singh/" 
+                href="https://www.linkedin.com/in/savitendersingh/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group"

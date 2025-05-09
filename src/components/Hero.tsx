@@ -179,7 +179,7 @@ const Hero = () => {
             <span className="relative z-10">GitHub</span>
           </a>
           <a
-            href="https://www.linkedin.com/in/savitender-singh/"
+            href="https://www.linkedin.com/in/savitendersingh/"
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 hover:shadow-blue-500/30 shadow-lg border border-gray-700 flex items-center relative overflow-hidden group"
