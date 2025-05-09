@@ -18,7 +18,8 @@ const Navbar = () => {
       // Update active section based on scroll position
       const sections = ['/', '/about', '/projects', '/contact'];
       const sectionElements = sections.map(section => {
-        const element = document.getElementById(section.replace('/', '') || 'home');
+        const sectionId = section === '/' ? 'home' : section.replace('/', '');
+        const element = document.getElementById(sectionId);
         return { section, top: element?.offsetTop || 0 };
       });
 
@@ -32,6 +33,21 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  
+  // Handle smooth scrolling when clicking on nav items
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault();
+    const sectionId = path === '/' ? 'home' : path.replace('/', '');
+    const element = document.getElementById(sectionId);
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop,
+        behavior: 'smooth'
+      });
+      setActiveSection(path);
+      if (isOpen) setIsOpen(false);
+    }
+  };
 
   const menuItems = [
     { path: '/', label: 'Home' },
@@ -69,6 +85,7 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={(e) => handleNavClick(e, item.path)}
                 className={`relative px-2 py-1 overflow-hidden group ${activeSection === item.path ? 'text-blue-400' : 'text-white'}`}
               >
                 <span className="relative z-10 transition-colors duration-300 group-hover:text-blue-400">
@@ -105,9 +122,9 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={(e) => handleNavClick(e, item.path)}
                 className={`block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700/30 backdrop-blur-sm transition-all duration-300 transform ${isOpen ? 'translate-x-0 opacity-100' : 'translate-x-8 opacity-0'}`}
                 style={{ transitionDelay: `${index * 0.1}s` }}
-                onClick={() => setIsOpen(false)}
               >
                 <span className="relative z-10">{item.label}</span>
                 <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-blue-400 transition-all duration-300 ${activeSection === item.path ? 'w-full' : ''}`}></span>

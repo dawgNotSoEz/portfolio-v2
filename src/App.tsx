@@ -10,7 +10,7 @@ import Footer from './components/Footer';
 function App() {
   return (
     <Router>
-      <div className="bg-gray-900 text-white min-h-screen">
+      <div className="bg-gradient-to-b from-gray-900 via-indigo-950 to-gray-900 text-white min-h-screen">
         <Navbar />
         <Hero />
         <About />
