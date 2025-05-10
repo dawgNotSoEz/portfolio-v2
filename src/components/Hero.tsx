@@ -1,198 +1,185 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const Hero = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
+  const [typedText, setTypedText] = useState('');
+  const roles = ['Frontend Developer (React)', 'Backend Developer (Flask)', 'Creative Coder', 'Problem Solver', 'UI/UX Enthusiast'];
+  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [typingSpeed, setTypingSpeed] = useState(150);
+  
+  // Typing effect
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Set canvas dimensions
-    const setCanvasDimensions = () => {
-      if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    setCanvasDimensions();
-    window.addEventListener('resize', setCanvasDimensions);
-
-    // Particle system
-    const particles: Particle[] = [];
-    const particleCount = 100;
-
-    class Particle {
-      x: number;
-      y: number;
-      size: number;
-      speedX: number;
-      speedY: number;
-      color: string;
-
-      constructor() {
-        this.x = Math.random() * (canvas?.width || window.innerWidth);
-        this.y = Math.random() * (canvas?.height || window.innerHeight);
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 1.5 - 0.75; // Reduced speed by half
-        this.speedY = Math.random() * 1.5 - 0.75; // Reduced speed by half
+    const currentRole = roles[currentRoleIndex];
+    
+    const handleTyping = () => {
+      // If deleting
+      if (isDeleting) {
+        setTypedText(currentRole.substring(0, typedText.length - 1));
+        setTypingSpeed(50); // Faster when deleting
         
-        // Gradient colors from blue to purple
-        const colors = [
-          '#4f46e5', // Indigo
-          '#6366f1', // Indigo lighter
-          '#8b5cf6', // Violet
-          '#a855f7', // Purple
-          '#3b82f6', // Blue
-        ];
-        this.color = colors[Math.floor(Math.random() * colors.length)];
-      }
-
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        const width = canvas?.width || window.innerWidth;
-        const height = canvas?.height || window.innerHeight;
-
-        if (this.x > width) this.x = 0;
-        else if (this.x < 0) this.x = width;
-
-        if (this.y > height) this.y = 0;
-        else if (this.y < 0) this.y = height;
-      }
-
-      draw() {
-        if (!ctx) return;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    // Create particles
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle());
-    }
-
-    // Connect particles with lines
-    function connectParticles() {
-      if (!ctx) return;
-      const maxDistance = 150;
-      
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < maxDistance) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(99, 102, 241, ${1 - distance / maxDistance})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
+        // When fully deleted, start typing the next role
+        if (typedText === '') {
+          setIsDeleting(false);
+          setCurrentRoleIndex((currentRoleIndex + 1) % roles.length);
+          setTypingSpeed(150);
+        }
+      } 
+      // If typing
+      else {
+        setTypedText(currentRole.substring(0, typedText.length + 1));
+        
+        // When fully typed, pause then start deleting
+        if (typedText === currentRole) {
+          setTimeout(() => setIsDeleting(true), 2000);
+          return;
         }
       }
-    }
-
-    // Animation loop
-    function animate() {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Slow down the animation by only updating every other frame
-      const now = Date.now();
-      if (!animate.lastUpdate || now - animate.lastUpdate > 30) { // Add frame limiting for smoother animation
-        particles.forEach(particle => {
-          particle.update();
-          particle.draw();
-        });
-        animate.lastUpdate = now;
-      }
-      
-      connectParticles();
-      requestAnimationFrame(animate);
-    }
-    
-    // Add type definition for the animate function
-    animate.lastUpdate = 0;
-
-    animate();
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', setCanvasDimensions);
     };
-  }, []);
+    
+    const typingTimer = setTimeout(handleTyping, typingSpeed);
+    return () => clearTimeout(typingTimer);
+  }, [typedText, currentRoleIndex, isDeleting, roles, typingSpeed]);
 
   return (
-    <div id="home" className="min-h-screen flex flex-col justify-center items-center relative overflow-hidden">
-      {/* Animated background */}
-      <canvas 
-        ref={canvasRef} 
-        className="absolute inset-0 bg-gradient-to-br from-gray-900 via-indigo-900 to-gray-900 z-0"
-      />
-      
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 py-20 backdrop-blur-sm bg-black bg-opacity-20 rounded-xl border border-gray-800 shadow-2xl max-w-3xl mx-4">
-        <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+    <section id="home" className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-16">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-slate-950 z-0">
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.15]"></div>
         
-        <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-4 animate-text-shimmer">
-          Savitender Singh
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-300 mb-8 animate-fade-in-delay">
-          Full Stack Developer | Creative Coder
-        </p>
-        <div className="flex flex-wrap justify-center gap-4 mb-8 animate-fade-in-delay">
-          <a href="mailto:singhsavitender4031@gmail.com" className="flex items-center text-gray-300 hover:text-blue-400 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-            </svg>
-            singhsavitender4031@gmail.com
-          </a>
-          <a href="tel:+919810746419" className="flex items-center text-gray-300 hover:text-blue-400 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-            </svg>
-            +91 9810746419
-          </a>
-        </div>
-        <div className="flex justify-center space-x-4 animate-fade-in-delay-2">
-          <a
-            href="https://github.com/dawgNotSoEz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 hover:shadow-blue-500/50 shadow-lg flex items-center relative overflow-hidden group"
-          >
-            <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 group-hover:animate-bounce" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            <span className="relative z-10">GitHub</span>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/savitendersingh/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 hover:shadow-blue-500/30 shadow-lg border border-gray-700 flex items-center relative overflow-hidden group"
-          >
-            <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-blue-500 rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 group-hover:animate-bounce" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-            <span className="relative z-10">LinkedIn</span>
-          </a>
+        {/* Gradient orbs */}
+        <div className="absolute top-20 left-20 w-96 h-96 bg-teal-500/20 rounded-full mix-blend-multiply filter blur-[128px] animate-blob"></div>
+        <div className="absolute bottom-20 right-20 w-96 h-96 bg-navy-500/20 rounded-full mix-blend-multiply filter blur-[128px] animate-blob animation-delay-4000"></div>
+      </div>
+      
+      <div className="container mx-auto px-6 md:px-12 relative z-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+          {/* Left content */}
+          <div className="w-full md:w-1/2 space-y-8 text-center md:text-left">
+            <div>
+              <h2 className="text-lg font-medium text-teal-400 mb-3">Hello, my name is</h2>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 leading-tight">
+                Savitender <span className="text-teal-400">Singh</span>
+              </h1>
+              <div className="h-16 md:h-12">
+                <p className="text-xl md:text-2xl text-slate-300 font-light">
+                  <span className="text-teal-400">&gt;</span> {typedText}
+                  <span className="inline-block w-2 h-6 ml-1 bg-teal-400 animate-blink"></span>
+                </p>
+              </div>
+            </div>
+            
+            <p className="text-slate-300 max-w-lg">
+              I craft responsive and performant web applications with clean, maintainable code. 
+              Focused on creating intuitive user experiences through modern web technologies.
+            </p>
+            
+            <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+              <a 
+                href="#projects" 
+                className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-slate-900 font-medium rounded-md transition-colors duration-300 flex items-center gap-2"
+              >
+                View My Work
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </a>
+              <a 
+                href="/Savitender_Singh_Resume.pdf" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-6 py-3 border border-teal-400 text-teal-400 hover:bg-teal-400/10 font-medium rounded-md transition-colors duration-300"
+              >
+                Resume
+              </a>
+            </div>
+            
+            <div className="flex items-center gap-6 justify-center md:justify-start">
+              <a 
+                href="https://github.com/dawgNotSoEz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-slate-300 hover:text-teal-400 transition-colors duration-300"
+                aria-label="GitHub"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </a>
+              <a 
+                href="https://www.linkedin.com/in/savitendersingh/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-slate-300 hover:text-teal-400 transition-colors duration-300"
+                aria-label="LinkedIn"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+              </a>
+              <a 
+                href="mailto:singhsavitender4031@gmail.com" 
+                className="text-slate-300 hover:text-teal-400 transition-colors duration-300"
+                aria-label="Email"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </a>
+            </div>
+          </div>
+          
+          {/* Right content - Hero image or illustration */}
+          <div className="w-full md:w-1/2 flex justify-center">
+            <div className="relative w-full max-w-md">
+              {/* Code snippet decoration */}
+              <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-700/50 shadow-xl overflow-hidden transform rotate-3 scale-95 opacity-80 z-0">
+                <div className="p-4 text-left">
+                  <div className="flex space-x-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <pre className="text-xs text-slate-300 font-mono">
+                    <code className="language-javascript">
+                      <span className="text-teal-400">const</span> <span className="text-blue-400">developer</span> = {'{'}
+                        name: <span className="text-yellow-300">'Savitender Singh'</span>,
+                        skills: [<span className="text-yellow-300">'React'</span>, <span className="text-yellow-300">'Node.js'</span>],
+                        passion: <span className="text-yellow-300">'Building elegant solutions'</span>
+                      {'}'}
+                    </code>
+                  </pre>
+                </div>
+              </div>
+              
+              {/* Main image */}
+              <div className="relative bg-slate-900 backdrop-blur-sm rounded-lg border border-slate-700/50 shadow-xl overflow-hidden z-10">
+                <div className="p-4 text-left">
+                  <div className="flex space-x-2 mb-4">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <pre className="text-xs text-slate-300 font-mono">
+                    <code className="language-javascript">
+                      <span className="text-teal-400">class</span> <span className="text-blue-400">Developer</span> {'{'}
+                        name = <span className="text-yellow-300">'Savitender Singh'</span>
+                        title = <span className="text-yellow-300">'Full Stack Developer'</span>
+                        skills = [<span className="text-yellow-300">'React'</span>, <span className="text-yellow-300">'Node.js'</span>]
+                      {'}'}</code>
+                  </pre>
+                  <div className="flex items-center mt-4">
+                    <div className="h-2 w-2 rounded-full bg-teal-400 mr-2 animate-pulse"></div>
+                    <span className="text-teal-400 text-sm font-mono">Ready to collaborate</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
