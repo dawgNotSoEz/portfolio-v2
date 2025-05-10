@@ -5,31 +5,33 @@ interface SkillType {
   icon: string;
   color: string;
   bgColor: string;
+  proficiency: number;
 }
 
 const Skills = () => {
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
 
   const frontendSkills = [
-    { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg', color: 'from-blue-500 to-cyan-400', bgColor: 'bg-blue-900/20' },
-    { name: 'HTML5', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg', color: 'from-orange-500 to-red-400', bgColor: 'bg-orange-900/20' },
-    { name: 'CSS3', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg', color: 'from-blue-400 to-indigo-400', bgColor: 'bg-blue-900/20' },
-    { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg', color: 'from-yellow-400 to-amber-500', bgColor: 'bg-yellow-900/20' },
-    { name: 'TypeScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg', color: 'from-blue-600 to-blue-400', bgColor: 'bg-blue-900/20' },
+    { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg', color: 'from-teal-400 to-teal-600', bgColor: 'bg-navy-900/20', proficiency: 75 },
+    { name: 'HTML5', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg', color: 'from-gold-400 to-gold-600', bgColor: 'bg-navy-900/20', proficiency: 85 },
+    { name: 'CSS3', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg', color: 'from-navy-400 to-navy-600', bgColor: 'bg-navy-900/20', proficiency: 80 },
+    { name: 'TypeScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg', color: 'from-teal-500 to-navy-500', bgColor: 'bg-navy-900/20', proficiency: 65 },
+    { name: 'Flutter', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg', color: 'from-navy-400 to-teal-500', bgColor: 'bg-navy-900/20', proficiency: 60 },
   ];
 
   const backendSkills = [
-    { name: 'Flask', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg', color: 'from-gray-500 to-gray-400', bgColor: 'bg-gray-900/30' },
-    { name: 'Django', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg', color: 'from-green-600 to-green-400', bgColor: 'bg-green-900/20' },
-    { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', color: 'from-blue-500 to-blue-300', bgColor: 'bg-blue-900/20' },
-    { name: 'Node.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg', color: 'from-green-500 to-green-300', bgColor: 'bg-green-900/20' },
+    { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', color: 'from-teal-500 to-teal-300', bgColor: 'bg-navy-900/20', proficiency: 90 },
+    { name: 'Flask', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg', color: 'from-slate-500 to-slate-400', bgColor: 'bg-navy-900/30', proficiency: 70 },
+    { name: 'Django', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg', color: 'from-teal-600 to-teal-400', bgColor: 'bg-navy-900/20', proficiency: 60 },
+    { name: 'Java', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg', color: 'from-gold-500 to-gold-300', bgColor: 'bg-navy-900/20', proficiency: 70 },
+    { name: 'Node.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg', color: 'from-teal-500 to-teal-300', bgColor: 'bg-navy-900/20', proficiency: 65 },
   ];
 
   const otherSkills = [
-    { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg', color: 'from-orange-600 to-orange-400', bgColor: 'bg-orange-900/20' },
-    { name: 'Tkinter', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', color: 'from-blue-500 to-blue-300', bgColor: 'bg-blue-900/20' },
-    { name: 'MongoDB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg', color: 'from-green-500 to-green-300', bgColor: 'bg-green-900/20' },
-    { name: 'SQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg', color: 'from-blue-400 to-blue-300', bgColor: 'bg-blue-900/20' },
+    { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg', color: 'from-gold-600 to-gold-400', bgColor: 'bg-navy-900/20', proficiency: 80 },
+    { name: 'MongoDB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg', color: 'from-teal-500 to-teal-300', bgColor: 'bg-navy-900/20', proficiency: 75 },
+    { name: 'SQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg', color: 'from-navy-400 to-navy-300', bgColor: 'bg-navy-900/20', proficiency: 70 },
+    { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg', color: 'from-gold-400 to-gold-500', bgColor: 'bg-navy-900/20', proficiency: 70 },
   ];
 
   const handleSkillHover = (name: string) => {
@@ -52,30 +54,36 @@ const Skills = () => {
       onMouseEnter={() => handleSkillHover(skill.name)}
       onMouseLeave={handleSkillLeave}
     >
-      <div className={`flex items-center p-4 ${skill.bgColor} backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden group`}>
+      <div className={`flex flex-col p-4 ${skill.bgColor} backdrop-blur-sm border border-navy-700/30 rounded-xl overflow-hidden group shadow-md hover:shadow-lg transition-all duration-300`}>
         {/* Background gradient that animates on hover */}
         <div 
           className={`absolute inset-0 bg-gradient-to-r ${skill.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
         ></div>
         
-        {/* Animated icon */}
-        <div className="relative z-10 mr-4 p-2 rounded-full bg-gray-800 bg-opacity-50 group-hover:bg-opacity-70 transition-all duration-300 transform group-hover:rotate-12">
-          <img 
-            src={skill.icon} 
-            alt={skill.name} 
-            className="w-8 h-8 transition-all duration-500 group-hover:scale-110" 
-          />
+        <div className="flex items-center mb-3">
+          {/* Animated icon */}
+          <div className="relative z-10 mr-4 p-2 rounded-full bg-navy-800 bg-opacity-50 group-hover:bg-opacity-70 transition-all duration-300 transform group-hover:rotate-12">
+            <img 
+              src={skill.icon} 
+              alt={skill.name} 
+              className="w-8 h-8 transition-all duration-500 group-hover:scale-110" 
+            />
+          </div>
+          
+          {/* Skill name */}
+          <div className="relative z-10">
+            <h3 className="text-lg font-medium text-white group-hover:text-white/90 transition-colors">{skill.name}</h3>
+          </div>
         </div>
         
-        {/* Skill name with animated underline */}
-        <div className="relative z-10">
-          <span className="text-white font-medium text-lg">{skill.name}</span>
-          <div className={`h-0.5 w-0 bg-gradient-to-r ${skill.color} transition-all duration-300 group-hover:w-full mt-1`}></div>
+        {/* Proficiency bar */}
+        <div className="w-full bg-navy-800 rounded-full h-2.5 mt-1">
+          <div 
+            className={`h-2.5 rounded-full bg-gradient-to-r ${skill.color}`} 
+            style={{ width: `${skill.proficiency}%`, transition: 'width 1s ease-in-out' }}
+          ></div>
+          <div className="text-right text-xs text-gray-400 mt-1">{skill.proficiency}%</div>
         </div>
-        
-        {/* Decorative circles */}
-        <div className={`absolute -bottom-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-r ${skill.color} opacity-10 transform transition-transform duration-500 group-hover:scale-150`}></div>
-        <div className={`absolute -top-4 -left-4 w-12 h-12 rounded-full bg-gradient-to-r ${skill.color} opacity-10 transform transition-transform duration-500 group-hover:scale-150`}></div>
       </div>
     </div>
   );
@@ -85,16 +93,14 @@ const Skills = () => {
       {/* Background with animated gradient */}
       <div className="absolute inset-0 bg-gradient-to-tr from-gray-900 via-purple-900/20 to-gray-900 z-0">
         {/* Animated grid background */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        
-        {/* Floating orbs */}
-        <div className="absolute top-20 left-20 w-64 h-64 rounded-full bg-purple-600/10 mix-blend-multiply filter blur-3xl animate-blob"></div>
-        <div className="absolute bottom-20 right-20 w-64 h-64 rounded-full bg-blue-600/10 mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+        <div className="absolute top-0 left-0 w-72 h-72 rounded-full bg-teal-600/10 mix-blend-multiply filter blur-3xl animate-blob"></div>
+        <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-navy-600/10 mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+        <div className="absolute bottom-20 right-20 w-64 h-64 rounded-full bg-gold-500/10 mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
       </div>
       
       <div className="container mx-auto relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 mb-4 animate-text-shimmer">
+          <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-navy-400 to-gold-400 mb-4 animate-text-shimmer">
             Technical Skills
           </h2>
           <p className="text-gray-300 max-w-2xl mx-auto animate-fade-in-delay">
@@ -104,7 +110,7 @@ const Skills = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div className="space-y-6">
-            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 mb-6 animate-fade-in-delay">
+            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-navy-500 mb-6 animate-fade-in-delay">
               <span className="inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -118,7 +124,7 @@ const Skills = () => {
           </div>
           
           <div className="space-y-6">
-            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500 mb-6 animate-fade-in-delay">
+            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-navy-400 to-teal-500 mb-6 animate-fade-in-delay">
               <span className="inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
@@ -132,7 +138,7 @@ const Skills = () => {
           </div>
           
           <div className="space-y-6">
-            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500 mb-6 animate-fade-in-delay">
+            <h3 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600 mb-6 animate-fade-in-delay">
               <span className="inline-flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
