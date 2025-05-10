@@ -1,4 +1,111 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
+// TicTacToe game component
+const TicTacToe = () => {
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [isXNext, setIsXNext] = useState(true);
+  const [gameStatus, setGameStatus] = useState('Play to win a special message!');
+  const [gameCompleted, setGameCompleted] = useState(false);
+  
+  const calculateWinner = useCallback((squares) => {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+      [0, 4, 8], [2, 4, 6]             // diagonals
+    ];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+    }
+    
+    return squares.every(square => square !== null) ? 'draw' : null;
+  }, []);
+  
+  const handleClick = (index) => {
+    if (board[index] || gameCompleted) return;
+    
+    const newBoard = [...board];
+    newBoard[index] = isXNext ? 'X' : 'O';
+    setBoard(newBoard);
+    
+    const winner = calculateWinner(newBoard);
+    if (winner) {
+      if (winner === 'X') {
+        setGameStatus('You won! 🎉 Send me a message with "TicTacToe Winner" for a special response!');
+      } else if (winner === 'O') {
+        setGameStatus('I won! Try again?');
+      } else {
+        setGameStatus('It\'s a draw! Try again?');
+      }
+      setGameCompleted(true);
+    } else {
+      setIsXNext(!isXNext);
+    }
+  };
+  
+  useEffect(() => {
+    // AI move
+    if (!isXNext && !gameCompleted) {
+      const timeoutId = setTimeout(() => {
+        const emptySquares = board.map((square, index) => square === null ? index : null).filter(val => val !== null);
+        if (emptySquares.length > 0) {
+          // Simple AI: random move
+          const randomIndex = Math.floor(Math.random() * emptySquares.length);
+          handleClick(emptySquares[randomIndex]);
+        }
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isXNext, board, gameCompleted]);
+  
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setIsXNext(true);
+    setGameStatus('Play to win a special message!');
+    setGameCompleted(false);
+  };
+  
+  const renderSquare = (index) => {
+    return (
+      <button 
+        className={`w-16 h-16 bg-slate-800 border border-slate-700 text-2xl font-bold flex items-center justify-center transition-all duration-300 ${board[index] === 'X' ? 'text-teal-400' : 'text-pink-400'} ${!board[index] && !gameCompleted ? 'hover:bg-slate-700' : ''}`}
+        onClick={() => handleClick(index)}
+        disabled={!isXNext || gameCompleted}
+      >
+        {board[index]}
+      </button>
+    );
+  };
+  
+  return (
+    <div className="bg-slate-900/50 backdrop-blur-sm p-6 rounded-lg border border-slate-800/50 flex flex-col items-center">
+      <h3 className="text-xl font-bold text-white mb-4">Tic-Tac-Toe Challenge</h3>
+      <p className="text-slate-300 mb-4 text-center">{gameStatus}</p>
+      
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        {renderSquare(0)}
+        {renderSquare(1)}
+        {renderSquare(2)}
+        {renderSquare(3)}
+        {renderSquare(4)}
+        {renderSquare(5)}
+        {renderSquare(6)}
+        {renderSquare(7)}
+        {renderSquare(8)}
+      </div>
+      
+      <button 
+        onClick={resetGame}
+        className="px-4 py-2 bg-slate-800 text-teal-400 rounded-md hover:bg-slate-700 transition-colors duration-300"
+      >
+        Reset Game
+      </button>
+    </div>
+  );
+};
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +115,7 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showGame, setShowGame] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -27,11 +135,18 @@ const Contact = () => {
       setIsSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
       
-      // Reset success message after 5 seconds
+      // Show the game after successful submission
+      setShowGame(true);
+      
+      // Reset success message after 8 seconds
       setTimeout(() => {
         setIsSubmitted(false);
-      }, 5000);
+      }, 8000);
     }, 1500);
+  };
+  
+  const toggleGame = () => {
+    setShowGame(!showGame);
   };
 
   return (
