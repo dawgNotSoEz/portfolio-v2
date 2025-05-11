@@ -77,19 +77,21 @@ const Skills = () => {
         </div>
         
         {/* Proficiency bar */}
-        <div className="w-full bg-navy-800 rounded-full h-2.5 mt-1">
+        <div className="w-full bg-navy-800 rounded-full h-3 mt-1 relative overflow-hidden shadow-inner">
           <div 
-            className={`h-2.5 rounded-full bg-gradient-to-r ${skill.color}`} 
+            className={`h-3 rounded-full bg-gradient-to-r ${skill.color} relative transition-all duration-300 group-hover:shadow-[0_0_10px_rgba(var(--tw-gradient-stops))]`} 
             style={{ width: `${skill.proficiency}%`, transition: 'width 1s ease-in-out' }}
-          ></div>
-          <div className="text-right text-xs text-gray-400 mt-1">{skill.proficiency}%</div>
+          >
+            {/* Subtle shine effect that preserves original colors */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-80 group-hover:animate-shine"></div>
+          </div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className="py-20 px-4 relative overflow-hidden">
+    <div id="skills" className="py-20 px-4 relative overflow-hidden">
       {/* Background with animated gradient */}
       <div className="absolute inset-0 bg-gradient-to-tr from-gray-900 via-purple-900/20 to-gray-900 z-0">
         {/* Animated grid background */}

@@ -3,10 +3,11 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
-import Projects from './components/Projects';
 import Skills from './components/Skills';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import ProjectsSection from './components/ProjectsSection';
+import GitHubSection from './components/GitHubSection';
 
 function App() {
   useEffect(() => {
@@ -36,7 +37,8 @@ function App() {
           <Hero />
           <About />
           <Skills />
-          <Projects />
+          <ProjectsSection showSection={true} />
+          <GitHubSection showSection={true} />
           <Contact />
           <Footer />
         </main>

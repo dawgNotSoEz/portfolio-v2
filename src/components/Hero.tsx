@@ -130,50 +130,56 @@ const Hero = () => {
             </div>
           </div>
           
-          {/* Right content - Hero image or illustration */}
+          {/* Right content - Interactive Terminal */}
           <div className="w-full md:w-1/2 flex justify-center">
-            <div className="relative w-full max-w-md">
-              {/* Code snippet decoration */}
-              <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-700/50 shadow-xl overflow-hidden transform rotate-3 scale-95 opacity-80 z-0">
-                <div className="p-4 text-left">
-                  <div className="flex space-x-2 mb-4">
+            <div className="w-full max-w-md">
+              {/* Terminal-style code card with hover/click expansion */}
+              <div className="group relative bg-slate-900 rounded-lg border border-slate-700 shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-teal-500/50 cursor-pointer">
+                {/* Terminal header */}
+                <div className="bg-slate-800 px-4 py-2 flex items-center justify-between">
+                  <div className="flex space-x-2">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
                     <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   </div>
-                  <pre className="text-xs text-slate-300 font-mono">
-                    <code className="language-javascript">
-                      <span className="text-teal-400">const</span> <span className="text-blue-400">developer</span> = {'{'}
-                        name: <span className="text-yellow-300">'Savitender Singh'</span>,
-                        skills: [<span className="text-yellow-300">'React'</span>, <span className="text-yellow-300">'Node.js'</span>],
-                        passion: <span className="text-yellow-300">'Building elegant solutions'</span>
+                  <div className="text-xs text-slate-400 font-mono">developer.js</div>
+                </div>
+                
+                {/* Initial code snippet (always visible) */}
+                <div className="p-4 transition-all duration-300 hover:bg-slate-800/50">
+                  <pre className="text-sm text-slate-300 font-mono">
+                    <code>
+                      <span className="text-teal-400">class</span> <span className="text-blue-400">Developer</span> {'{'}
+                        <span className="text-purple-400">name</span> = <span className="text-yellow-300">'Savitender Singh'</span>
+                        <span className="text-purple-400">title</span> = <span className="text-yellow-300">'Full Stack Developer'</span>
+                        <span className="text-purple-400">skills</span> = [<span className="text-yellow-300">'React'</span>, <span className="text-yellow-300">'Node.js'</span>, <span className="text-yellow-300">'TypeScript'</span>]
                       {'}'}
                     </code>
                   </pre>
                 </div>
-              </div>
-              
-              {/* Main image */}
-              <div className="relative bg-slate-900 backdrop-blur-sm rounded-lg border border-slate-700/50 shadow-xl overflow-hidden z-10">
-                <div className="p-4 text-left">
-                  <div className="flex space-x-2 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  </div>
-                  <pre className="text-xs text-slate-300 font-mono">
-                    <code className="language-javascript">
-                      <span className="text-teal-400">class</span> <span className="text-blue-400">Developer</span> {'{'}
-                        name = <span className="text-yellow-300">'Savitender Singh'</span>
-                        title = <span className="text-yellow-300">'Full Stack Developer'</span>
-                        skills = [<span className="text-yellow-300">'React'</span>, <span className="text-yellow-300">'Node.js'</span>]
-                      {'}'}</code>
-                  </pre>
-                  <div className="flex items-center mt-4">
-                    <div className="h-2 w-2 rounded-full bg-teal-400 mr-2 animate-pulse"></div>
-                    <span className="text-teal-400 text-sm font-mono">Ready to collaborate</span>
+                
+                {/* Expanded terminal content (visible on hover/click) */}
+                <div className="max-h-0 overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-96 bg-slate-800/50">
+                  <div className="p-4 border-t border-slate-700/50">
+                    <div className="flex items-center mb-2">
+                      <span className="text-teal-400 font-mono text-xs">$ </span>
+                      <span className="text-slate-300 font-mono text-xs ml-2">developer.showDetails()</span>
+                    </div>
+                    <div className="text-xs text-slate-300 font-mono space-y-2">
+                      <p><span className="text-teal-400">→</span> <span className="text-purple-400">location:</span> <span className="text-yellow-300">'Remote'</span></p>
+                      <p><span className="text-teal-400">→</span> <span className="text-purple-400">experience:</span> <span className="text-yellow-300">'5+ years'</span></p>
+                      <p><span className="text-teal-400">→</span> <span className="text-purple-400">education:</span> <span className="text-yellow-300">'Computer Science'</span></p>
+                      <p><span className="text-teal-400">→</span> <span className="text-purple-400">interests:</span> [<span className="text-yellow-300">'Web Development'</span>, <span className="text-yellow-300">'UI/UX'</span>, <span className="text-yellow-300">'AI'</span>]</p>
+                      <p><span className="text-teal-400">→</span> <span className="text-purple-400">currentlyLearning:</span> <span className="text-yellow-300">'Blockchain Development'</span></p>
+                    </div>
                   </div>
                 </div>
+              </div>
+              
+              {/* Ready to collaborate indicator */}
+              <div className="flex items-center mt-4 ml-4">
+                <div className="h-2 w-2 rounded-full bg-teal-400 mr-2 animate-pulse"></div>
+                <span className="text-teal-400 text-sm font-mono">Ready to collaborate</span>
               </div>
             </div>
           </div>

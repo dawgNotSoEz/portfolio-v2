@@ -7,9 +7,6 @@ const TicTacToe = () => {
   const [isXNext, setIsXNext] = useState(true);
   const [gameStatus, setGameStatus] = useState('Play to win a special message!');
   const [gameCompleted, setGameCompleted] = useState(false);
-  const [playerScore, setPlayerScore] = useState(0);
-  const [aiScore, setAiScore] = useState(0);
-  const [difficulty, setDifficulty] = useState('medium'); // 'easy', 'medium', 'hard'
   
   const calculateWinner = useCallback((squares: (string | null)[]) => {
     const lines = [
@@ -38,10 +35,8 @@ const TicTacToe = () => {
     const winner = calculateWinner(newBoard);
     if (winner) {
       if (winner === 'X') {
-        setPlayerScore(prev => prev + 1);
         setGameStatus('You won! 🎉 Send me a message with "TicTacToe Winner" for a special response!');
       } else if (winner === 'O') {
-        setAiScore(prev => prev + 1);
         setGameStatus('I won! Try again?');
       } else {
         setGameStatus('It\'s a draw! Try again?');
@@ -52,81 +47,26 @@ const TicTacToe = () => {
     }
   };
   
-  // Find the best move for AI based on difficulty level
-  const findBestMove = useCallback((currentBoard: (string | null)[], difficultyLevel: string) => {
-    const emptySquares = currentBoard.map((square, index) => square === null ? index : null).filter(val => val !== null) as number[];
-    if (emptySquares.length === 0) return -1;
-    
-    // Easy: Just make a random move
-    if (difficultyLevel === 'easy' || (difficultyLevel === 'medium' && Math.random() < 0.4)) {
-      return emptySquares[Math.floor(Math.random() * emptySquares.length)];
-    }
-    
-    // Hard or Medium: Try to make a strategic move
-    // Check if AI can win in the next move
-    for (let i = 0; i < emptySquares.length; i++) {
-      const index = emptySquares[i];
-      const boardCopy = [...currentBoard];
-      boardCopy[index] = 'O';
-      if (calculateWinner(boardCopy) === 'O') {
-        return index;
-      }
-    }
-    
-    // Check if player can win in the next move and block
-    for (let i = 0; i < emptySquares.length; i++) {
-      const index = emptySquares[i];
-      const boardCopy = [...currentBoard];
-      boardCopy[index] = 'X';
-      if (calculateWinner(boardCopy) === 'X') {
-        return index;
-      }
-    }
-    
-    // If it's hard difficulty, try more strategic moves
-    if (difficultyLevel === 'hard' || (difficultyLevel === 'medium' && Math.random() < 0.7)) {
-      // Try to take the center
-      if (currentBoard[4] === null) return 4;
-      
-      // Try to take the corners
-      const corners = [0, 2, 6, 8].filter(corner => currentBoard[corner] === null);
-      if (corners.length > 0) {
-        return corners[Math.floor(Math.random() * corners.length)];
-      }
-    }
-    
-    // Otherwise, just take any available square
-    return emptySquares[Math.floor(Math.random() * emptySquares.length)];
-  }, [calculateWinner]);
-  
   useEffect(() => {
     // AI move
     if (!isXNext && !gameCompleted) {
       const timeoutId = setTimeout(() => {
-        const bestMove = findBestMove(board, difficulty);
-        if (bestMove !== -1) {
-          handleClick(bestMove);
+        const emptySquares = board.map((square, index) => square === null ? index : null).filter(val => val !== null);
+        if (emptySquares.length > 0) {
+          // Simple AI: random move
+          const randomIndex = Math.floor(Math.random() * emptySquares.length);
+          handleClick(emptySquares[randomIndex] as number);
         }
       }, 500);
       return () => clearTimeout(timeoutId);
     }
-  }, [isXNext, board, gameCompleted, findBestMove, difficulty]);
+  }, [isXNext, board, gameCompleted]);
   
   const resetGame = () => {
     setBoard(Array(9).fill(null));
     setIsXNext(true);
     setGameStatus('Play to win a special message!');
     setGameCompleted(false);
-  };
-  
-  const resetScores = () => {
-    setPlayerScore(0);
-    setAiScore(0);
-  };
-  
-  const changeDifficulty = (level: string) => {
-    setDifficulty(level);
-    resetGame();
   };
   
   const renderSquare = (index: number) => {
@@ -147,38 +87,6 @@ const TicTacToe = () => {
       <h3 className="text-xl font-bold text-white mb-4">Tic-Tac-Toe Challenge</h3>
       <p className="text-slate-300 mb-4 text-center">{gameStatus}</p>
       
-      {/* Score display */}
-      <div className="flex justify-between w-full mb-4 px-2">
-        <div className="text-center">
-          <span className="text-teal-400 font-bold text-lg">You: {playerScore}</span>
-        </div>
-        <div className="text-center">
-          <span className="text-pink-400 font-bold text-lg">AI: {aiScore}</span>
-        </div>
-      </div>
-      
-      {/* Difficulty selector */}
-      <div className="flex space-x-2 mb-4">
-        <button 
-          onClick={() => changeDifficulty('easy')} 
-          className={`px-2 py-1 text-xs rounded-md transition-colors duration-300 ${difficulty === 'easy' ? 'bg-teal-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
-        >
-          Easy
-        </button>
-        <button 
-          onClick={() => changeDifficulty('medium')} 
-          className={`px-2 py-1 text-xs rounded-md transition-colors duration-300 ${difficulty === 'medium' ? 'bg-teal-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
-        >
-          Medium
-        </button>
-        <button 
-          onClick={() => changeDifficulty('hard')} 
-          className={`px-2 py-1 text-xs rounded-md transition-colors duration-300 ${difficulty === 'hard' ? 'bg-teal-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
-        >
-          Hard
-        </button>
-      </div>
-      
       <div className="grid grid-cols-3 gap-2 mb-4">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -191,20 +99,12 @@ const TicTacToe = () => {
         {renderSquare(8)}
       </div>
       
-      <div className="flex space-x-3">
-        <button 
-          onClick={resetGame}
-          className="px-4 py-2 bg-slate-800 text-teal-400 rounded-md hover:bg-slate-700 transition-colors duration-300"
-        >
-          New Game
-        </button>
-        <button 
-          onClick={resetScores}
-          className="px-4 py-2 bg-slate-800 text-pink-400 rounded-md hover:bg-slate-700 transition-colors duration-300"
-        >
-          Reset Scores
-        </button>
-      </div>
+      <button 
+        onClick={resetGame}
+        className="px-4 py-2 bg-slate-800 text-teal-400 rounded-md hover:bg-slate-700 transition-colors duration-300"
+      >
+        Reset Game
+      </button>
     </div>
   );
 };
@@ -269,7 +169,7 @@ const Contact = () => {
         >
           <h2 className="text-4xl font-bold text-white mb-4">Get In Touch</h2>
           <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-blue-500 mx-auto mb-6"></div>
-          <p className="text-slate-400 max-w-xl mx-auto">Have a project in mind or just want to collaborate? As a student developer, I'm always open to new opportunities and connections!</p>
+          <p className="text-slate-400 max-w-xl mx-auto">Have a project in mind or just want to say hello? Feel free to drop me a message!</p>
         </motion.div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
@@ -292,7 +192,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-white">Email</h4>
-                  <p className="text-slate-400">singhsavitender4031@gmail.com</p>
+                  <p className="text-slate-400">contact@yourportfolio.com</p>
                 </div>
               </div>
               
@@ -305,19 +205,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-white">Location</h4>
-                  <p className="text-slate-400">Delhi, India</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start">
-                <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mr-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-white">Phone</h4>
-                  <p className="text-slate-400">+91 9810746419</p>
+                  <p className="text-slate-400">Toronto, Canada</p>
                 </div>
               </div>
               
@@ -329,7 +217,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-white">Student</h4>
-                  <p className="text-slate-400">Computer Science Major, 3rd Year</p>
+                  <p className="text-slate-400">Computer Science Major</p>
                 </div>
               </div>
             </div>
@@ -337,7 +225,7 @@ const Contact = () => {
             <div className="mt-auto">
               <h4 className="text-lg font-semibold text-white mb-4">Connect With Me</h4>
               <div className="flex space-x-4">
-                <a href="https://github.com/dawgNotSoEz" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-slate-700 transition-all duration-300">
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-slate-700 transition-all duration-300">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                   </svg>
@@ -350,16 +238,6 @@ const Contact = () => {
                 <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-slate-700 transition-all duration-300">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                  </svg>
-                </a>
-                <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-slate-700 transition-all duration-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" />
-                  </svg>
-                </a>
-                <a href="https://dribbble.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-teal-400 hover:bg-slate-700 transition-all duration-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0c-6.628 0-12 5.373-12 12s5.372 12 12 12 12-5.373 12-12-5.372-12-12-12zm9.885 11.441c-2.575-.422-4.943-.445-7.103-.073-.244-.563-.497-1.125-.767-1.68 2.31-1 4.165-2.358 5.548-4.082 1.35 1.594 2.197 3.619 2.322 5.835zm-3.842-7.282c-1.205 1.554-2.868 2.783-4.986 3.68-1.016-1.861-2.178-3.676-3.488-5.438.779-.197 1.591-.314 2.431-.314 2.275 0 4.368.779 6.043 2.072zm-10.516-.993c1.331 1.742 2.511 3.538 3.537 5.381-2.43.715-5.331 1.082-8.684 1.105.692-2.835 2.601-5.193 5.147-6.486zm-5.44 8.834l.013-.256c3.849-.005 7.169-.448 9.95-1.322.233.475.456.952.67 1.432-3.38 1.057-6.165 3.222-8.337 6.48-1.432-1.719-2.296-3.927-2.296-6.334zm3.829 7.81c1.969-3.088 4.482-5.098 7.598-6.027.928 2.42 1.609 4.91 2.043 7.46-3.349 1.291-6.953.666-9.641-1.433zm11.586.43c-.438-2.353-1.08-4.653-1.92-6.897 1.876-.265 3.94-.196 6.199.196-.437 2.786-2.028 5.192-4.279 6.701z" />
                   </svg>
                 </a>
               </div>
