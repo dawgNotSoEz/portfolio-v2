@@ -85,7 +85,7 @@ const Hero = () => {
                 </svg>
               </a>
               <a 
-                href="/Savitender_Singh_Resume.pdf" 
+                href="https://drive.google.com/file/d/1bY-dM58Vt2DrFdVXFLSTiGkOPvTidkZC/view" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="px-6 py-3 border border-teal-400 text-teal-400 hover:bg-teal-400/10 font-medium rounded-md transition-colors duration-300"
