@@ -82,7 +82,7 @@ const About = () => {
             {/* CTA */}
             <div className="pt-6 flex flex-wrap gap-4">
               <a 
-                href="/Savitender_Singh_Resume.pdf" 
+                href="https://drive.google.com/file/d/1bY-dM58Vt2DrFdVXFLSTiGkOPvTidkZC/view" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-slate-900 font-medium rounded-md transition-colors duration-300 flex items-center gap-2"
