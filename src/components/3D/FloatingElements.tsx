@@ -9,12 +9,29 @@ function FloatingShape({ position, color, geometry, hitRef }: { position: [numbe
   // randomize phase so shapes don't sync exactly
   const phaseOffset = useRef(Math.random() * 4);
   const prevP = useRef(0);
+  // horizontal velocity (units per second)
+  const velocityX = useRef((Math.random() > 0.5 ? 1 : -1) * (1.0 + Math.random() * 1.4));
+  // horizontal bounds (approx screen half-width at shape depth)
+  const boundX = 6.5;
 
   useFrame((state, delta) => {
     if (!meshRef.current) return;
     // gentle rotation
     meshRef.current.rotation.x += delta * 0.6;
     meshRef.current.rotation.y += delta * 0.9;
+
+    // horizontal motion and bounce off sides
+    meshRef.current.position.x += velocityX.current * delta;
+    if (meshRef.current.position.x > boundX) {
+      meshRef.current.position.x = boundX;
+      velocityX.current = -Math.abs(velocityX.current) * (0.9 + Math.random() * 0.2);
+      // trigger a hit-like event when bouncing off the screen edge
+      if (hitRef) hitRef.current = state.clock.getElapsedTime();
+    } else if (meshRef.current.position.x < -boundX) {
+      meshRef.current.position.x = -boundX;
+      velocityX.current = Math.abs(velocityX.current) * (0.9 + Math.random() * 0.2);
+      if (hitRef) hitRef.current = state.clock.getElapsedTime();
+    }
 
     const time = state.clock.getElapsedTime() + phaseOffset.current;
     const cycle = 5; // shorter cycle so it bounces/approaches more often
