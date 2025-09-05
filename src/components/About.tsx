@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { motion, useInView, useAnimation } from "framer-motion";
 import { Code2, Lightbulb, Users, Target, Coffee, Award } from "lucide-react";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 const About = () => {
   const ref = useRef(null);
@@ -248,6 +249,15 @@ const About = () => {
             );
           })}
         </motion.div>
+      </div>
+      {/* Resume Download Button */}
+      <div className="mt-8 flex justify-center">
+        <Button
+          variant="outline"
+          onClick={() => window.open("https://drive.google.com/file/d/1zDAbwbdu6-3GdzIjDApW4CDGoEv02aLO/view?usp=sharing", "_blank")}
+        >
+          Download Resume
+        </Button>
       </div>
     </section>
   );

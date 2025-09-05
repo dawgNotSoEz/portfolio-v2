@@ -15,13 +15,13 @@ const Footer = () => {
           </p>
           
           <div className="flex justify-center space-x-6 mb-8">
-            <a href="https://github.com" className="text-muted-foreground hover:text-primary hover-lift">
+                <a href="https://github.com/dawgNotSoEz" className="text-muted-foreground hover:text-primary hover-lift">
               <Github size={24} />
             </a>
-            <a href="https://linkedin.com" className="text-muted-foreground hover:text-primary hover-lift">
+                <a href="https://linkedin.com/in/savitendersingh" className="text-muted-foreground hover:text-primary hover-lift">
               <Linkedin size={24} />
             </a>
-            <a href="mailto:hello@savitender.dev" className="text-muted-foreground hover:text-primary hover-lift">
+                <a href="mailto:paramsavi06@gmail.com" className="text-muted-foreground hover:text-primary hover-lift">
               <Mail size={24} />
             </a>
           </div>

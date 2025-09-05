@@ -9,16 +9,21 @@ const Projects = () => {
 
   const projects = [
     {
-      title: "E-Commerce Platform",
-      description: "Full-stack platform with React, Node.js, and real-time features. Increased conversion rates by 35%.",
-      tech: ["React", "TypeScript", "Node.js", "PostgreSQL"],
+      title: "Turing Community Discord Bot",
+      description:
+        "A Discord bot for coding communities. Manages programming challenges, leaderboards, events, member registration, and integrates with GitHub for a collaborative learning experience.",
+      tech: ["Discord.js", "Node.js", "GitHub API"],
       featured: true,
+  repo: "https://github.com/dawgNotSoEz/turing-dc",
     },
     {
-      title: "Task Management App", 
-      description: "Collaborative workspace with real-time updates and intuitive drag-and-drop interface.",
-      tech: ["React", "Socket.io", "MongoDB"],
+      title: "VaultBin",
+      description:
+        "VaultBin is a next-gen, privacy-first platform for securely sharing text, code, and files. Zero-knowledge architecture, real-time collaborative editing, encrypted file attachments, auto-expiring pastes, and password protection. Tech Stack: Next.js (React), Tailwind CSS, libsodium-wrappers, Node.js (Fastify), PostgreSQL.",
+      tech: ["Next.js", "React", "Tailwind CSS", "libsodium", "Node.js", "Fastify", "PostgreSQL"],
       featured: true,
+  repo: "https://github.com/dawgNotSoEz/vault-bin",
+  demo: "https://vault-bin.vercel.app",
     },
   ];
 
@@ -63,14 +68,32 @@ const Projects = () => {
               </div>
               
               <div className="flex gap-4">
-                <Button variant="outline" size="sm" className="hover-lift">
-                  <Github className="w-4 h-4 mr-2" />
-                  Code
-                </Button>
-                <Button size="sm" className="btn-premium">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Live Demo
-                </Button>
+                {project.repo ? (
+                  <a href={project.repo} target="_blank" rel="noreferrer">
+                    <Button variant="outline" size="sm" className="hover-lift">
+                      <Github className="w-4 h-4 mr-2" />
+                      Code
+                    </Button>
+                  </a>
+                ) : (
+                  <Button variant="outline" size="sm" className="hover-lift">
+                    <Github className="w-4 h-4 mr-2" />
+                    Code
+                  </Button>
+                )}
+                {project.demo ? (
+                  <a href={project.demo} target="_blank" rel="noreferrer">
+                    <Button size="sm" className="btn-premium">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Live Demo
+                    </Button>
+                  </a>
+                ) : (
+                  <Button size="sm" className="btn-premium">
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Live Demo
+                  </Button>
+                )}
               </div>
             </motion.div>
           ))}

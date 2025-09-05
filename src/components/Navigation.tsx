@@ -67,12 +67,7 @@ const Navigation = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <div className="absolute -inset-1 bg-gradient-primary opacity-20 rounded-xl blur group-hover:opacity-40 transition-opacity" />
-            </div>
+            <img src="/logo.ico" alt="logo" className="w-10 h-10 rounded-xl object-cover" />
             <div className="font-display font-bold text-xl text-gradient">
               Savitender Singh
             </div>
@@ -118,7 +113,7 @@ const Navigation = () => {
             >
               <Button
                 className="btn-premium"
-                onClick={() => window.open("#", "_blank")}
+                onClick={() => window.open("https://drive.google.com/file/d/1zDAbwbdu6-3GdzIjDApW4CDGoEv02aLO/view?usp=sharing", "_blank")}
               >
                 <Download className="w-4 h-4 mr-2" />
                 Resume
@@ -182,7 +177,7 @@ const Navigation = () => {
               <div className="pt-4 border-t border-border/20">
                 <Button
                   className="w-full btn-premium"
-                  onClick={() => window.open("#", "_blank")}
+                  onClick={() => window.open("https://drive.google.com/file/d/1zDAbwbdu6-3GdzIjDApW4CDGoEv02aLO/view?usp=sharing", "_blank")}
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download Resume

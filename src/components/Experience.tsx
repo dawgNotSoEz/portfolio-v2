@@ -8,18 +8,20 @@ const Experience = () => {
 
   const experiences = [
     {
-      title: "Full Stack Developer",
-      company: "Tech Startup",
-      period: "2023 - Present",
-      description: "Led development of scalable web applications using React, Node.js, and PostgreSQL. Improved performance by 40% and user engagement by 60%.",
-      technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "AWS"],
+      title: "Backend Developer Intern",
+      company: "Shree Guru Gobind Singh Tricentenary University (SGTU)",
+      period: "May 2025 - July 2025",
+      description:
+        "Built backend for an Internship & Placement Portal with focus on scalability and security. Developed RESTful APIs for authentication, profiles, resume uploads, and job applications. Integrated MongoDB for flexible student data storage and seamless CRUD operations. Implemented session-based authentication and validation for secure, reliable access.",
+      technologies: ["Python Flask", "FastAPI", "REST API Design", "MongoDB"],
     },
     {
-      title: "Frontend Developer",
-      company: "Digital Agency",
-      period: "2022 - 2023",
-      description: "Created responsive web interfaces for 15+ clients. Specialized in React ecosystem and modern CSS frameworks.",
-      technologies: ["React", "JavaScript", "Tailwind CSS", "Figma"],
+      title: "Backend Developer Intern",
+      company: "Aithinkers",
+      period: "July 2024",
+      description:
+        "Built a FastAPI-based microservice to provide RESTful data access. Integrated with PostgreSQL using SQLAlchemy for CRUD operations. Implemented input validation with Pydantic and documented endpoints via OpenAPI.",
+      technologies: ["FastAPI", "SQL", "SQLAlchemy", "CRUD"],
     },
   ];
 

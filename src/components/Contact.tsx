@@ -67,7 +67,7 @@ const Contact = () => {
             <div className="glass p-6 rounded-xl hover-lift">
               <Mail className="w-6 h-6 text-primary mb-3" />
               <h4 className="font-semibold mb-1">Email</h4>
-              <p className="text-muted-foreground">hello@savitender.dev</p>
+              <p className="text-muted-foreground">paramsavi06@gmail.com</p>
             </div>
             
             <div className="glass p-6 rounded-xl hover-lift">

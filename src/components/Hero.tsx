@@ -7,6 +7,7 @@ import FloatingElements from "./3D/FloatingElements";
 const Hero = () => {
   const [displayText, setDisplayText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentPhrase, setCurrentPhrase] = useState(0);
   const [showCursor, setShowCursor] = useState(true);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -14,74 +15,49 @@ const Hero = () => {
 
   const phrases = [
     "Crafting Digital Experiences",
-    "Building Scalable Solutions", 
+    "Building Scalable Solutions",
     "Creating Beautiful Interfaces",
-    "Solving Complex Problems"
+    "Solving Complex Problems",
   ];
-  
-  const [currentPhrase, setCurrentPhrase] = useState(0);
 
   useEffect(() => {
-    if (isInView) {
-      controls.start("visible");
-    }
+    if (isInView) controls.start("visible");
   }, [isInView, controls]);
 
-  // Enhanced Typewriter Effect
+  // Typewriter
   useEffect(() => {
-    const phrase = phrases[currentPhrase];
-    
-    const typeTimer = setTimeout(() => {
+    const phrase = phrases[currentPhrase] || "";
+    const timer = setTimeout(() => {
       if (currentIndex < phrase.length) {
         setDisplayText(phrase.slice(0, currentIndex + 1));
-        setCurrentIndex(currentIndex + 1);
+        setCurrentIndex((i) => i + 1);
       } else {
         setTimeout(() => {
           setCurrentIndex(0);
           setDisplayText("");
-          setCurrentPhrase((prev) => (prev + 1) % phrases.length);
-        }, 2000);
+          setCurrentPhrase((p) => (p + 1) % phrases.length);
+        }, 1800);
       }
-    }, 100);
-
-    return () => clearTimeout(typeTimer);
+    }, 80);
+    return () => clearTimeout(timer);
   }, [currentIndex, currentPhrase]);
 
   // Cursor blink
   useEffect(() => {
-    const cursorTimer = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 530);
-    return () => clearInterval(cursorTimer);
+    const id = setInterval(() => setShowCursor((s) => !s), 530);
+    return () => clearInterval(id);
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const element = document.getElementById(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const socialLinks = [
-    {
-      icon: Github,
-      href: "https://github.com",
-      label: "GitHub",
-      color: "hover:text-foreground"
-    },
-    {
-      icon: Linkedin,
-      href: "https://linkedin.com",
-      label: "LinkedIn", 
-      color: "hover:text-blue-400"
-    },
-    {
-      icon: Mail,
-      href: "mailto:hello@savitender.dev",
-      label: "Email",
-      color: "hover:text-accent"
-    }
+    { icon: Github, href: "https://github.com/dawgNotSoEz", label: "GitHub" },
+    { icon: Linkedin, href: "https://linkedin.com/in/savitendersingh", label: "LinkedIn" },
+    { icon: Mail, href: "mailto:paramsavi06@gmail.com", label: "Email" },
   ];
+
+  const scrollToSection = (href: string) => {
+    const el = document.getElementById(href);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const stats = [
     { label: "Years Experience", value: "2+", icon: Code2 },
@@ -236,7 +212,7 @@ const Hero = () => {
                   href={social.href}
                   target={social.href.startsWith('http') ? '_blank' : undefined}
                   rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className={`p-4 glass rounded-full text-muted-foreground ${social.color} transition-colors duration-300 hover-lift hover:shadow-glow`}
+                  className={`p-4 glass rounded-full text-muted-foreground transition-colors duration-300 hover-lift hover:shadow-glow`}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: 20 }}
