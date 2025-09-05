@@ -89,7 +89,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-hero">
+  <section id="home" className="min-h-[110vh] flex items-center justify-center relative overflow-hidden bg-gradient-hero">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 mesh-bg opacity-30" />
       
@@ -126,9 +126,9 @@ const Hero = () => {
         }}
       />
 
-      <div className="container-custom relative z-10" ref={ref}>
+      <div className="container-custom relative z-10 hero-extra-space" ref={ref}>
         <motion.div
-          className="max-w-5xl mx-auto text-center"
+          className="max-w-6xl mx-auto text-center"
           variants={containerVariants}
           initial="hidden"
           animate={controls}
@@ -136,7 +136,7 @@ const Hero = () => {
           {/* Greeting */}
           <motion.div 
             variants={itemVariants}
-            className="inline-flex items-center space-x-2 mb-6 px-4 py-2 rounded-full glass border border-primary/20"
+            className="inline-flex items-center space-x-2 mb-6 px-4 py-2 rounded-full glass border border-primary/20 hero-badge"
           >
             <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
             <span className="text-muted-foreground font-mono text-sm">
@@ -145,15 +145,15 @@ const Hero = () => {
           </motion.div>
 
           {/* Main Heading */}
-          <motion.div variants={itemVariants} className="space-y-4 mb-8">
+          <motion.div variants={itemVariants} className="space-y-8 mb-16">
             <h1 className="text-hero font-display font-bold">
               Hi, I'm{" "}
-              <span className="text-gradient block md:inline">
+              <span className="text-gradient block md:inline font-name">
                 Savitender Singh
               </span>
             </h1>
             
-            <div className="text-2xl md:text-4xl font-medium text-muted-foreground min-h-[3rem] flex items-center justify-center">
+            <div className="text-2xl md:text-4xl font-medium text-muted-foreground min-h-[4rem] flex items-center justify-center">
               <span className="mr-2">I specialize in</span>
               <span className="text-foreground font-semibold relative">
                 {displayText}
@@ -169,7 +169,7 @@ const Hero = () => {
           {/* Description */}
           <motion.p
             variants={itemVariants}
-            className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed"
+            className="text-xl text-muted-foreground max-w-4xl mx-auto mb-16 leading-relaxed"
           >
             A passionate full-stack developer with expertise in React, Python, and modern web technologies. 
             I transform ideas into exceptional digital experiences that users love and businesses need.
@@ -178,7 +178,7 @@ const Hero = () => {
           {/* CTA Buttons */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+            className="flex flex-col sm:flex-row gap-6 justify-center mb-20"
           >
             <Button
               size="lg"
