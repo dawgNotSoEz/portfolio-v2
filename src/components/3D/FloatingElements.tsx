@@ -16,7 +16,7 @@ function FloatingShape({ position, color, geometry }: { position: [number, numbe
     meshRef.current.rotation.y += delta * 0.9;
 
     const time = state.clock.getElapsedTime() + phaseOffset.current;
-    const cycle = 8; // seconds per cycle
+  const cycle = 5; // shorter cycle so it bounces/approaches more often
     const p = (time % cycle) / cycle; // 0..1 progress
 
     // approach window: shape moves forward and fades out between 50% and 80% of cycle
@@ -36,6 +36,9 @@ function FloatingShape({ position, color, geometry }: { position: [number, numbe
       // set material opacity if available
       const mat: any = meshRef.current.material;
       if (mat) mat.opacity = opacity;
+      // small scale 'squeeze' as it approaches
+      const approachScale = 1 + Math.sin(t * Math.PI) * 0.08;
+      meshRef.current.scale.set(approachScale, approachScale, approachScale);
     } else if (p >= approachEnd) {
       // after hitting the 'wall', teleport behind and fade back in
       const t = (p - approachEnd) / (1 - approachEnd);
@@ -46,6 +49,9 @@ function FloatingShape({ position, color, geometry }: { position: [number, numbe
       const opacity = t; // fade in
       const mat: any = meshRef.current.material;
       if (mat) mat.opacity = opacity;
+      // bounce back animation scale on return
+      const returnBounce = 1 + Math.sin(t * Math.PI * 2) * 0.12;
+      meshRef.current.scale.set(returnBounce, returnBounce, returnBounce);
     } else {
       // normal resting/float zone: keep base position and full opacity
       meshRef.current.position.x = basePos.current[0];
@@ -53,6 +59,12 @@ function FloatingShape({ position, color, geometry }: { position: [number, numbe
       meshRef.current.position.z = basePos.current[2];
       const mat: any = meshRef.current.material;
       if (mat) mat.opacity = 1;
+    }
+    // add a frequent subtle bounce while idle
+    const idleBounce = 1 + Math.sin(time * 12 + phaseOffset.current) * 0.03;
+    // only apply idle bounce when not in approach/return phases
+    if (p < approachStart) {
+      meshRef.current.scale.set(idleBounce, idleBounce, idleBounce);
     }
   });
 
