@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -67,13 +67,17 @@
     --shadow-glow-accent: 0 0 40px hsl(142 76% 73% / 0.3);
     --shadow-glass: 0 8px 32px hsl(240 10% 3.9% / 0.12);
     
-    /* Typography */
-    --font-sans: 'Inter', system-ui, sans-serif;
-    --font-serif: 'Playfair Display', Georgia, serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  /* Use Space Grotesk for headings / display (grotesk) */
+  --font-display: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  /* Use Playfair Display as the serif for name/title accents */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
     
     /* Spacing & Layout */
-    --container-max: 1400px;
+  /* Wider container for modern 1900+ displays */
+  --container-max: 1800px;
     --section-padding: 5rem;
     --radius: 1rem;
     --radius-sm: 0.5rem;
@@ -456,7 +460,16 @@
   .delay-1000 { animation-delay: 1000ms; }
   
   /* Typography Utilities */
-  .font-display { font-family: var(--font-serif); }
+  /* Display headings use the Grotesk variable */
+  .font-display { font-family: var(--font-display); }
+  .font-name { 
+    font-family: var(--font-serif); 
+    font-style: normal; 
+    letter-spacing: 0.6px; 
+    font-weight: 700; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
   .font-mono { font-family: var(--font-mono); }
   
   /* Responsive Text Sizes */
@@ -465,6 +478,14 @@
     line-height: 1.1;
     font-weight: 800;
   }
+
+    /* Hero badge (Availability) - prevent overlap with fixed nav */
+    .hero-badge {
+      position: relative;
+      top: 0.6rem;
+      z-index: 60;
+      transform: translateY(0);
+    }
   
   .text-display {
     font-size: clamp(2rem, 5vw, 4rem);
@@ -514,4 +535,32 @@
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
   }
+}
+
+/* Large-screen optimizations for modern 1900px+ displays */
+@media (min-width: 1900px) {
+  :root {
+    --container-max: 2200px;
+    /* more vertical breathing on very large screens */
+    --section-padding: 9rem;
+  }
+
+  .text-hero {
+    font-size: 9rem;
+    line-height: 1.02;
+    letter-spacing: -1px;
+  }
+
+  .text-display {
+    font-size: 5rem;
+  }
+
+  .container-custom {
+    max-width: var(--container-max);
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+
+  /* give more space between hero elements */
+  .hero-extra-space { padding-top: 4rem; padding-bottom: 4rem; }
 }
