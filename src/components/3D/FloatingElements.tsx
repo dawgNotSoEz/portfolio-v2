@@ -1,13 +1,14 @@
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Text3D, OrbitControls, Environment, MeshTransmissionMaterial } from '@react-three/drei';
 import { useRef, Suspense } from 'react';
 import * as THREE from 'three';
 
-function FloatingShape({ position, color, geometry }: { position: [number, number, number], color: string, geometry: string }) {
+function FloatingShape({ position, color, geometry, hitRef }: { position: [number, number, number], color: string, geometry: string, hitRef?: { current: number } }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const basePos = useRef<[number, number, number]>(position);
   // randomize phase so shapes don't sync exactly
   const phaseOffset = useRef(Math.random() * 4);
+  const prevP = useRef(0);
 
   useFrame((state, delta) => {
     if (!meshRef.current) return;
@@ -16,7 +17,7 @@ function FloatingShape({ position, color, geometry }: { position: [number, numbe
     meshRef.current.rotation.y += delta * 0.9;
 
     const time = state.clock.getElapsedTime() + phaseOffset.current;
-  const cycle = 5; // shorter cycle so it bounces/approaches more often
+    const cycle = 5; // shorter cycle so it bounces/approaches more often
     const p = (time % cycle) / cycle; // 0..1 progress
 
     // approach window: shape moves forward and fades out between 50% and 80% of cycle
@@ -49,6 +50,10 @@ function FloatingShape({ position, color, geometry }: { position: [number, numbe
       const opacity = t; // fade in
       const mat: any = meshRef.current.material;
       if (mat) mat.opacity = opacity;
+      // register hit moment when we cross into return phase
+      if (hitRef && prevP.current < approachEnd) {
+        hitRef.current = state.clock.getElapsedTime();
+      }
       // bounce back animation scale on return
       const returnBounce = 1 + Math.sin(t * Math.PI * 2) * 0.12;
       meshRef.current.scale.set(returnBounce, returnBounce, returnBounce);
@@ -66,6 +71,7 @@ function FloatingShape({ position, color, geometry }: { position: [number, numbe
     if (p < approachStart) {
       meshRef.current.scale.set(idleBounce, idleBounce, idleBounce);
     }
+    prevP.current = p;
   });
 
   const GeometryComponent = () => {
@@ -104,15 +110,41 @@ function FloatingShape({ position, color, geometry }: { position: [number, numbe
 }
 
 function Scene() {
+  const hitRef = useRef(0);
+  const { camera } = useThree();
+  // camera shake state
+  const shake = useRef({ time: 0, duration: 0.6, intensity: 0 });
+
+  useFrame((state, delta) => {
+    // if a hit was registered recently, start a shake
+    if (hitRef.current && state.clock.getElapsedTime() - hitRef.current < 0.1) {
+      shake.current.time = 0;
+      shake.current.intensity = 0.14;
+    }
+
+    if (shake.current.intensity > 0) {
+      shake.current.time += delta;
+      const t = shake.current.time / shake.current.duration;
+      const damp = Math.exp(-3 * t);
+      const magnitude = shake.current.intensity * damp;
+      camera.position.x = Math.sin(state.clock.getElapsedTime() * 40) * magnitude;
+      camera.position.y = Math.cos(state.clock.getElapsedTime() * 38) * magnitude;
+      camera.lookAt(0, 0, 0);
+      if (t >= 1) {
+        // reset
+        shake.current.intensity = 0;
+        camera.position.set(0, 0, 4);
+      }
+    }
+  });
+
   return (
     <>
       <Environment preset="city" />
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
-      
-  {/* Keep only two subtle floating shapes for clarity: top-right and bottom-left */}
-  <FloatingShape position={[4.5, 4.5, -3]} color="#8b5cf6" geometry="sphere" />
-  <FloatingShape position={[-4.5, -3.5, -3]} color="#06b6d4" geometry="octahedron" />
+      <FloatingShape position={[4.5, 4.5, -3]} color="#8b5cf6" geometry="sphere" hitRef={hitRef} />
+      <FloatingShape position={[-4.5, -3.5, -3]} color="#06b6d4" geometry="octahedron" hitRef={hitRef} />
     </>
   );
 }
