@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="bg-surface/50 border-t border-border/20">
       <div className="container-custom py-12">
         <div className="text-center">
-          <div className="text-2xl font-display font-bold text-gradient mb-4">
+          <div className="text-2xl font-display font-bold text-foreground mb-4">
             Savitender Singh
           </div>
           <p className="text-muted-foreground mb-8">
@@ -26,8 +26,8 @@ const Footer = () => {
             </a>
           </div>
           
-          <p className="text-muted-foreground text-sm flex items-center justify-center">
-            © {currentYear} Made with <Heart className="w-4 h-4 mx-1 text-red-500" fill="currentColor" /> and lots of coffee
+          <p className="text-muted-foreground text-sm">
+            © {currentYear} Savitender Singh. All Rights Reserved.
           </p>
         </div>
       </div>

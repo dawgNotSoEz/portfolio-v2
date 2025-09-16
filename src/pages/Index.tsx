@@ -1,12 +1,22 @@
+import React, { Suspense } from "react";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Experience from "@/components/Experience";
-import Skills from "@/components/Skills";
-import Projects from "@/components/Projects";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+
+// Lazy load components that are below the fold for better performance
+const About = React.lazy(() => import("@/components/About"));
+const Experience = React.lazy(() => import("@/components/Experience"));
+const Skills = React.lazy(() => import("@/components/Skills"));
+const Projects = React.lazy(() => import("@/components/Projects"));
+const Contact = React.lazy(() => import("@/components/Contact"));
+const Footer = React.lazy(() => import("@/components/Footer"));
+
+// A simple fallback component to show while lazy components are loading
+const LoadingFallback = () => (
+  <div className="w-full h-96 flex items-center justify-center text-muted-foreground">
+    <p className="text-lg font-medium animate-pulse">Loading sections...</p>
+  </div>
+);
 
 const Index = () => {
   return (
@@ -15,13 +25,17 @@ const Index = () => {
         <Navigation />
         <main>
           <Hero />
-          <About />
-          <Experience />
-          <Skills />
-          <Projects />
-          <Contact />
+          <Suspense fallback={<LoadingFallback />}>
+            <About />
+            <Experience />
+            <Skills />
+            <Projects />
+            <Contact />
+          </Suspense>
         </main>
-        <Footer />
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
       </div>
     </ThemeProvider>
   );

@@ -1,76 +1,79 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { FaReact, FaPython, FaNodeJs, FaAws, FaSass } from "react-icons/fa";
+import {
+  SiTypescript,
+  SiTailwindcss,
+  SiNextdotjs,
+  SiPostgresql,
+  SiFlask,
+  SiDjango,
+  SiMongodb,
+  SiMysql,
+  SiFirebase,
+} from "react-icons/si";
+import { TbBrandReactNative } from "react-icons/tb";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+const frontendSkills = [
+  { name: "React", icon: <FaReact size={20} className="text-sky-500" /> },
+  { name: "React Native", icon: <TbBrandReactNative size={20} className="text-sky-500" /> },
+  { name: "TypeScript", icon: <SiTypescript size={20} className="text-blue-600" /> },
+  { name: "Next.js", icon: <SiNextdotjs size={20} className="text-black dark:text-white" /> },
+  { name: "Tailwind CSS", icon: <SiTailwindcss size={20} className="text-teal-500" /> },
+  { name: "Sass", icon: <FaSass size={20} className="text-pink-500" /> },
+];
+
+const backendSkills = [
+  { name: "Python", icon: <FaPython size={20} className="text-yellow-400" /> },
+  { name: "Node.js", icon: <FaNodeJs size={20} className="text-green-500" /> },
+  { name: "Flask", icon: <SiFlask size={20} className="text-black dark:text-white" /> },
+  { name: "Django", icon: <SiDjango size={20} className="text-green-800" /> },
+  { name: "PostgreSQL", icon: <SiPostgresql size={20} className="text-indigo-500" /> },
+  { name: "MongoDB", icon: <SiMongodb size={20} className="text-green-600" /> },
+  { name: "MySQL", icon: <SiMysql size={20} className="text-blue-500" /> },
+  { name: "Firebase", icon: <SiFirebase size={20} className="text-yellow-500" /> },
+  { name: "AWS", icon: <FaAws size={20} className="text-orange-500" /> },
+];
+
+const Badge = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex items-center justify-center gap-2 bg-gray-100 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 text-sm font-medium px-4 py-2 rounded-lg shadow-sm hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-colors">
+    {children}
+  </div>
+);
 
 const Skills = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  const skillCategories = [
-    {
-      title: "Frontend",
-      skills: [
-        { name: "React", level: 95 },
-        { name: "TypeScript", level: 90 },
-        { name: "Tailwind CSS", level: 95 },
-        { name: "Next.js", level: 85 },
-      ]
-    },
-    {
-      title: "Backend", 
-      skills: [
-        { name: "Python", level: 90 },
-        { name: "Node.js", level: 85 },
-        { name: "PostgreSQL", level: 80 },
-        { name: "AWS", level: 75 },
-      ]
-    },
-  ];
-
   return (
-    <section id="skills" className="section-padding bg-surface/30">
-      <div className="container-custom" ref={ref}>
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-        >
-          <h2 className="text-display font-display font-bold text-gradient mb-6">
-            Skills & Expertise
-          </h2>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {skillCategories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              className="glass p-8 rounded-xl hover-lift"
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: index * 0.2 }}
-            >
-              <h3 className="text-xl font-semibold mb-6 text-gradient">
-                {category.title}
-              </h3>
-              <div className="space-y-4">
-                {category.skills.map((skill) => (
-                  <div key={skill.name}>
-                    <div className="flex justify-between mb-2">
-                      <span className="font-medium">{skill.name}</span>
-                      <span className="text-muted-foreground">{skill.level}%</span>
-                    </div>
-                    <div className="w-full bg-border rounded-full h-2">
-                      <motion.div
-                        className="h-2 bg-gradient-primary rounded-full"
-                        initial={{ width: 0 }}
-                        animate={isInView ? { width: `${skill.level}%` } : { width: 0 }}
-                        transition={{ duration: 1, delay: index * 0.2 }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+    <section id="skills" className="py-16 md:py-24 bg-white dark:bg-black">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+          Tech Stack
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+          <Card className="border-gray-200 dark:border-gray-800 shadow-lg hover:shadow-xl transition-shadow">
+            <CardHeader>
+              <CardTitle className="text-2xl font-semibold text-center">Frontend</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap justify-center gap-4">
+              {frontendSkills.map((skill) => (
+                <Badge key={skill.name}>
+                  {skill.icon}
+                  <span>{skill.name}</span>
+                </Badge>
+              ))}
+            </CardContent>
+          </Card>
+          <Card className="border-gray-200 dark:border-gray-800 shadow-lg hover:shadow-xl transition-shadow">
+            <CardHeader>
+              <CardTitle className="text-2xl font-semibold text-center">Backend</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap justify-center gap-4">
+              {backendSkills.map((skill) => (
+                <Badge key={skill.name}>
+                  {skill.icon}
+                  <span>{skill.name}</span>
+                </Badge>
+              ))}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>

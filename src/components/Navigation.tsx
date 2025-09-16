@@ -24,7 +24,13 @@ const Navigation = () => {
         return false;
       });
       
-      if (current) setActiveSection(current);
+      if (current) {
+        setActiveSection(current);
+        // Inform other components which section is active
+        try {
+          window.dispatchEvent(new CustomEvent('nav-active', { detail: current }));
+        } catch (e) {}
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -68,7 +74,7 @@ const Navigation = () => {
             whileTap={{ scale: 0.95 }}
           >
             <img src="/logo.ico" alt="logo" className="w-10 h-10 rounded-xl object-cover" />
-            <div className="font-display font-bold text-xl text-gradient">
+            <div className="font-display font-bold text-xl animate-light-to-dark-gradient">
               Savitender Singh
             </div>
           </motion.button>
@@ -82,12 +88,18 @@ const Navigation = () => {
                 className={`relative font-medium transition-colors duration-300 ${
                   activeSection === item.href
                     ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "animate-light-to-dark-gradient"
                 }`}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 + 0.2 }}
                 whileHover={{ y: -2 }}
+                onMouseEnter={() => {
+                  try { window.dispatchEvent(new CustomEvent('nav-hover', { detail: item.href })); } catch (e) {}
+                }}
+                onMouseLeave={() => {
+                  try { window.dispatchEvent(new CustomEvent('nav-hover', { detail: null })); } catch (e) {}
+                }}
               >
                 {item.name}
                 {activeSection === item.href && (
@@ -112,7 +124,7 @@ const Navigation = () => {
               className="hidden md:block"
             >
               <Button
-                className="btn-premium"
+                className="btn-animated-premium animate-light-to-dark-gradient"
                 onClick={() => window.open("https://drive.google.com/file/d/1zDAbwbdu6-3GdzIjDApW4CDGoEv02aLO/view?usp=sharing", "_blank")}
               >
                 <Download className="w-4 h-4 mr-2" />
@@ -163,7 +175,7 @@ const Navigation = () => {
                   className={`block w-full text-left py-3 px-4 rounded-lg font-medium transition-colors ${
                     activeSection === item.href
                       ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-surface"
+                      : "animate-light-to-dark-gradient"
                   }`}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -176,7 +188,7 @@ const Navigation = () => {
               
               <div className="pt-4 border-t border-border/20">
                 <Button
-                  className="w-full btn-premium"
+                  className="w-full btn-animated-premium animate-light-to-dark-gradient"
                   onClick={() => window.open("https://drive.google.com/file/d/1zDAbwbdu6-3GdzIjDApW4CDGoEv02aLO/view?usp=sharing", "_blank")}
                 >
                   <Download className="w-4 h-4 mr-2" />

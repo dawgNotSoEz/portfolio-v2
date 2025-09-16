@@ -50,6 +50,10 @@
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 234 89% 74%;
+
+    /* Animated Gradient */
+    --gradient-anim-start: hsl(0 0% 80%);
+    --gradient-anim-end: hsl(0 0% 20%);
     
     /* Premium Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(234 89% 74%), hsl(270 95% 75%));
@@ -117,6 +121,10 @@
     --muted-foreground: 240 5% 64.9%;
     --border: 240 10% 15%;
     --input: 240 10% 15%;
+
+    /* Animated Gradient */
+    --gradient-anim-start: hsl(0 0% 90%);
+    --gradient-anim-end: hsl(0 0% 40%);
     
     /* Dark mode gradients */
     --gradient-glass: linear-gradient(135deg, hsl(240 10% 6% / 0.8), hsl(240 10% 8% / 0.4));
@@ -130,18 +138,108 @@
   }
 }
 
+/* Premium Button Styles */
+.btn-animated-premium {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.btn-animated-premium::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 25%,
+    var(--primary) 50%,
+    transparent 75%,
+    transparent 100%
+  );
+  animation: rotate 4s linear infinite;
+  z-index: -1;
+}
+
+.btn-animated-premium::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: var(--background);
+  z-index: -1;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --primary: 0 0% 0%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+  }
+}
+
+/* Large-screen optimizations for modern 1900px+ displays */
+@media (min-width: 1900px) {
+  :root {
+    --container-max: 2200px;
+    /* more vertical breathing on very large screens */
+    --section-padding: 9rem;
+  }
+
+  .text-hero {
+    font-size: 9rem;
+    line-height: 1.02;
+    letter-spacing: -1px;
+  }
+
+  .text-display {
+    font-size: 5rem;
+  }
+
+  .container-custom {
+    max-width: var(--container-max);
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+
+  /* give more space between hero elements */
+  .hero-extra-space { padding-top: 4rem; padding-bottom: 4rem; }
+}
+
 @layer base {
   * {
-    @apply border-border;
+    box-sizing: border-box;
   }
   
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
+    /* Ensure in-page anchors account for fixed nav height (approx 5.5rem) */
+    scroll-padding-top: 5.5rem;
   }
   
   body {
     @apply bg-background text-foreground font-sans antialiased;
+  .hero-extra-space {
+    padding-top: 6.5rem; /* increased to push content below fixed nav + some breathing room */
+  }
+
+  /* Slightly increase nav padding when scrolled for clearer separation */
+  .glass-strong.py-4,
+  .glass-strong.py-6 {
+    /* noop placeholder to avoid specificity issues; adjust nav scrolled styles in component if needed */
+  }
     font-family: var(--font-sans);
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     line-height: 1.6;
@@ -285,6 +383,32 @@
   .btn-premium > * {
     position: relative;
     z-index: 1;
+  }
+
+  /* Animated Border for Buttons */
+  .btn-animated-border {
+    position: relative;
+    z-index: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    padding: 2px; /* To make space for the border */
+  }
+
+  .btn-animated-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+    background-size: 200% 200%;
+    animation: gradient-border-anim 4s linear infinite;
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  @keyframes gradient-border-anim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   /* Floating Animation */
@@ -433,6 +557,15 @@
     50% { background-position: 100% 50%; }
   }
 
+  @keyframes gradient-move {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
   @keyframes matrix-rain {
     0% { transform: translateY(-100vh); }
     100% { transform: translateY(100vh); }
@@ -448,6 +581,14 @@
   .animate-typewriter { animation: typewriter 2s steps(40, end) forwards; }
   .animate-blink { animation: blink 1s infinite; }
   .animate-gradient { animation: gradient-shift 3s ease-in-out infinite; }
+  .animate-light-to-dark-gradient {
+    background: linear-gradient(90deg, var(--gradient-anim-start), var(--gradient-anim-end), var(--gradient-anim-start));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-move 4s linear infinite;
+  }
   
   /* Delay Classes */
   .delay-75 { animation-delay: 75ms; }
@@ -483,7 +624,8 @@
     .hero-badge {
       position: relative;
       top: 0.6rem;
-      z-index: 60;
+      /* ensure nav (z-50) sits above this badge */
+      z-index: 40;
       transform: translateY(0);
     }
   
@@ -526,41 +668,4 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* High Contrast Mode */
-@media (prefers-contrast: high) {
-  :root {
-    --primary: 0 0% 0%;
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
-  }
-}
-
-/* Large-screen optimizations for modern 1900px+ displays */
-@media (min-width: 1900px) {
-  :root {
-    --container-max: 2200px;
-    /* more vertical breathing on very large screens */
-    --section-padding: 9rem;
-  }
-
-  .text-hero {
-    font-size: 9rem;
-    line-height: 1.02;
-    letter-spacing: -1px;
-  }
-
-  .text-display {
-    font-size: 5rem;
-  }
-
-  .container-custom {
-    max-width: var(--container-max);
-    padding-left: 3rem;
-    padding-right: 3rem;
-  }
-
-  /* give more space between hero elements */
-  .hero-extra-space { padding-top: 4rem; padding-bottom: 4rem; }
 }

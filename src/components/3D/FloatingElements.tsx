@@ -1,6 +1,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Text3D, OrbitControls, Environment, MeshTransmissionMaterial } from '@react-three/drei';
+import { Float, Environment } from '@react-three/drei';
 import { useRef, Suspense } from 'react';
+import { useInView } from 'react-intersection-observer';
 import * as THREE from 'three';
 
 function FloatingShape({ position, color, geometry, hitRef }: { position: [number, number, number], color: string, geometry: string, hitRef?: { current: number } }) {
@@ -17,11 +18,11 @@ function FloatingShape({ position, color, geometry, hitRef }: { position: [numbe
   useFrame((state, delta) => {
     if (!meshRef.current) return;
     // gentle rotation
-    meshRef.current.rotation.x += delta * 0.6;
-    meshRef.current.rotation.y += delta * 0.9;
+    meshRef.current.rotation.x += delta * 0.25;
+    meshRef.current.rotation.y += delta * 0.35;
 
-    // horizontal motion and bounce off sides
-    meshRef.current.position.x += velocityX.current * delta;
+  // horizontal motion and gentle bounce
+  meshRef.current.position.x += velocityX.current * delta * 0.6;
     if (meshRef.current.position.x > boundX) {
       meshRef.current.position.x = boundX;
       velocityX.current = -Math.abs(velocityX.current) * (0.9 + Math.random() * 0.2);
@@ -34,7 +35,7 @@ function FloatingShape({ position, color, geometry, hitRef }: { position: [numbe
     }
 
     const time = state.clock.getElapsedTime() + phaseOffset.current;
-    const cycle = 5; // shorter cycle so it bounces/approaches more often
+  const cycle = 6; // slightly longer cycle for calmer motion
     const p = (time % cycle) / cycle; // 0..1 progress
 
     // approach window: shape moves forward and fades out between 50% and 80% of cycle
@@ -49,11 +50,10 @@ function FloatingShape({ position, color, geometry, hitRef }: { position: [numbe
       // ease-out movement forward
       const z = THREE.MathUtils.lerp(baseZ, frontZ, t);
       meshRef.current.position.z = z;
-      // fade out
-      const opacity = 1 - t;
-      // set material opacity if available
-      const mat: any = meshRef.current.material;
-      if (mat) mat.opacity = opacity;
+  // fade out (if material supports it)
+  const opacity = 1 - t;
+  const mat: any = meshRef.current.material;
+  if (mat && 'opacity' in mat) mat.opacity = opacity;
       // small scale 'squeeze' as it approaches
       const approachScale = 1 + Math.sin(t * Math.PI) * 0.08;
       meshRef.current.scale.set(approachScale, approachScale, approachScale);
@@ -64,9 +64,9 @@ function FloatingShape({ position, color, geometry, hitRef }: { position: [numbe
       const startZ = frontZ + 1;
       const z = THREE.MathUtils.lerp(startZ, baseZ, t);
       meshRef.current.position.z = z;
-      const opacity = t; // fade in
-      const mat: any = meshRef.current.material;
-      if (mat) mat.opacity = opacity;
+  const opacity = t; // fade in
+  const mat: any = meshRef.current.material;
+  if (mat && 'opacity' in mat) mat.opacity = opacity;
       // register hit moment when we cross into return phase
       if (hitRef && prevP.current < approachEnd) {
         hitRef.current = state.clock.getElapsedTime();
@@ -82,8 +82,8 @@ function FloatingShape({ position, color, geometry, hitRef }: { position: [numbe
       const mat: any = meshRef.current.material;
       if (mat) mat.opacity = 1;
     }
-    // add a frequent subtle bounce while idle
-    const idleBounce = 1 + Math.sin(time * 12 + phaseOffset.current) * 0.03;
+  // add a subtle idle bounce
+  const idleBounce = 1 + Math.sin(time * 6 + phaseOffset.current) * 0.02;
     // only apply idle bounce when not in approach/return phases
     if (p < approachStart) {
       meshRef.current.scale.set(idleBounce, idleBounce, idleBounce);
@@ -94,31 +94,30 @@ function FloatingShape({ position, color, geometry, hitRef }: { position: [numbe
   const GeometryComponent = () => {
     switch (geometry) {
       case 'sphere':
-        return <sphereGeometry args={[1.6, 64, 64]} />;
+        // lower segment count for performance
+        return <sphereGeometry args={[1.9, 32, 32]} />;
       case 'box':
-        return <boxGeometry args={[1.6, 1.6, 1.6]} />;
+        return <boxGeometry args={[1.8, 1.8, 1.8]} />;
       case 'octahedron':
-        return <octahedronGeometry args={[1.4]} />;
+        return <octahedronGeometry args={[1.6]} />;
       case 'torus':
-        return <torusGeometry args={[1.2, 0.4, 32, 64]} />;
+        return <torusGeometry args={[1.4, 0.45, 24, 48]} />;
       default:
-        return <sphereGeometry args={[0.5, 32, 32]} />;
+        return <sphereGeometry args={[0.6, 16, 16]} />;
     }
   };
 
   return (
-    <Float speed={1.8} rotationIntensity={2.5} floatIntensity={3.2}>
+    <Float speed={0.6} rotationIntensity={0.6} floatIntensity={0.6}>
       <mesh ref={meshRef} position={position}>
         <GeometryComponent />
-        <MeshTransmissionMaterial
+        {/* Use a lighter material for performance while keeping a glossy look */}
+        <meshStandardMaterial
           color={color}
-          thickness={0.6}
-          roughness={0}
-          transmission={1}
-          ior={1.2}
-          chromaticAberration={0.02}
-          backside
-          transparent
+          metalness={0.6}
+          roughness={0.25}
+          envMapIntensity={0.9}
+          transparent={true}
           opacity={1}
         />
       </mesh>
@@ -157,9 +156,10 @@ function Scene() {
 
   return (
     <>
-      <Environment preset="city" />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
+      {/* Simpler lighting setup for performance and clearer visibility */}
+      <ambientLight intensity={0.65} />
+      <directionalLight position={[8, 10, 6]} intensity={1.2} />
+      <pointLight position={[-6, -4, 6]} intensity={0.6} />
       <FloatingShape position={[4.5, 4.5, -3]} color="#8b5cf6" geometry="sphere" hitRef={hitRef} />
       <FloatingShape position={[-4.5, -3.5, -3]} color="#06b6d4" geometry="octahedron" hitRef={hitRef} />
     </>
@@ -175,17 +175,24 @@ function LoadingFallback() {
 }
 
 export default function FloatingElements({ className = "" }: { className?: string }) {
+  const [ref, inView] = useInView({ triggerOnce: true, rootMargin: '300px' });
+
   return (
-    <div className={`w-full h-full ${className}`}>
-      <Canvas
-        camera={{ position: [0, 0, 4], fov: 50 }}
-        gl={{ antialias: true, alpha: true }}
-        style={{ background: 'transparent' }}
-      >
-        <Suspense fallback={null}>
-          <Scene />
-        </Suspense>
-      </Canvas>
+    <div ref={ref} className={`w-full h-full ${className}`}>
+      {inView ? (
+        <Canvas
+          camera={{ position: [0, 0, 4], fov: 50 }}
+          dpr={[1, 1.5]}
+          gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
+          style={{ background: 'transparent' }}
+        >
+          <Suspense fallback={<LoadingFallback />}>
+            <Scene />
+          </Suspense>
+        </Canvas>
+      ) : (
+        <LoadingFallback />
+      )}
     </div>
   );
 }
